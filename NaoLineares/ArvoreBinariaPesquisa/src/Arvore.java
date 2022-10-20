@@ -56,7 +56,6 @@ public class Arvore {
     {
         if (no != null) {
             no.atualizarFator(lado);
-            System.out.println(no.getChave() + " " + no.getFatorBalanceamento());
             if (no.getFatorBalanceamento() > 1 || no.getFatorBalanceamento() < -1)
             {
                 rebalancearArvore(no);
@@ -64,12 +63,9 @@ public class Arvore {
 
             if (no.getFatorBalanceamento() != 0 && no.getPai() != null) {
                 if(no.éFilhoEsquerdo()){
-                    System.out.println("Filho esquerdo "+no.getChave() + " " + no.getFatorBalanceamento());
                     atualizar_fb_insercao(no.getPai(), 1);
                 }
                 else{
-                    System.out.println("Filho direito "+no.getChave() + " " + no.getFatorBalanceamento());
-                    System.out.println("Pai "+no.getPai().getChave() + " " + no.getPai().getFatorBalanceamento());
                     atualizar_fb_insercao(no.getPai(), -1);
                 }  
             }
@@ -101,11 +97,8 @@ public class Arvore {
         int FB = no.getFatorBalanceamento();
         if (FB < 0){
             if (no.getFilhoDireito().getFatorBalanceamento() <= 0){
-                System.out.println("Simples Esquerda");
-                System.out.println(FB);
                 this.rotacaoEsquerdaSimples(no);
             } else {
-                System.out.println("Dupla Esquerda");
                 this.rotacaoEsquerdaDupla(no);
             }
         }
@@ -155,8 +148,6 @@ public class Arvore {
 
     public void rotacaoEsquerdaDupla(No no)
     {
-        System.out.println("No desbalanceado: " + no.getChave() + " - " + no.getFatorBalanceamento());
-        System.out.println("No filho direito: " + no.getFilhoDireito().getChave() + " - " + no.getFilhoDireito().getFatorBalanceamento());
         this.rotacaoDireitaSimples(no.getFilhoDireito());
         
         this.rotacaoEsquerdaSimples(no);
@@ -203,123 +194,88 @@ public class Arvore {
         this.rotacaoDireitaSimples(no);
     }
     
-
-    public No remover(int k) {
+    public No remover_avl(int k)
+    {
         No remover = pesquisar(this.raiz, k);
-        boolean eh_filho_esquerdo = remover.éFilhoEsquerdo();
-        if (remover.getChave() == k) {
-            if (remover.éNoFolha()) {
-                No pai = remover.getPai();
-                if (pai == null) {
-                    this.raiz = null;
-                    return null;
-                }
+        remover(remover);
 
-                this.removerFilho(pai, remover);
-                remover.setPai(null);
-
-                if (eh_filho_esquerdo) {
-                    this.atualizar_fb_remocao(pai, -1);
-                }
-                else {
-                    this.atualizar_fb_remocao(pai, 1);
-                }
-
-                return remover;
+        if(pai_sucessor != null){
+            if (sucessor_filho_esquerdo) {
+                this.atualizar_fb_remocao(pai_sucessor, -1);
             }
-
-            if (remover.temDoisFilhos()) {
-                No sucessor = this.inOrder(remover.getFilhoDireito());
-                boolean sucessor_filho_esquerdo = sucessor.éFilhoEsquerdo();
-                No pai_remover = remover.getPai();
-                No pai_sucessor = sucessor.getPai();
-
-                No filho_direito_sucessor = sucessor.getFilhoDireito();
-                if (remover == this.raiz) {
-                    this.raiz = sucessor;
-                }
-
-                
-                
-                // Removendo sucessor como filho do seu antigo pai
-                if (sucessor != remover.getFilhoDireito()){
-                    sucessor.setFilhoDireito(remover.getFilhoDireito());
-                    remover.getFilhoDireito().setPai(sucessor);
-                    if (filho_direito_sucessor != null){
-                        pai_sucessor.setFilhoEsquerdo(filho_direito_sucessor);
-                    }
-                }
-                this.removerFilho(sucessor.getPai(), sucessor);               
-
-                // Atribuindo sucessor como pai do filho esquerdo do removido
-                sucessor.setFilhoEsquerdo(remover.getFilhoEsquerdo());
-                remover.getFilhoEsquerdo().setPai(sucessor);
-                 
-                
-                if (pai_sucessor == remover) {
-                    pai_sucessor = pai_remover;
-                    sucessor_filho_esquerdo = eh_filho_esquerdo;
-                }
-                sucessor.setPai(pai_remover);
-
-                if(pai_remover != null){
-                    if (remover.éFilhoEsquerdo()) {
-                        pai_remover.setFilhoEsquerdo(sucessor);
-                    } else if (remover.éFilhoDireito()) {
-                        pai_remover.setFilhoDireito(sucessor);
-                    }
-                }
-                
-                remover.setPai(null);
-                remover.setFilhoEsquerdo(null);
-                remover.setFilhoDireito(null);
-                
-                if(pai_sucessor != null){
-                    if (sucessor_filho_esquerdo) {
-                        this.atualizar_fb_remocao(pai_sucessor, -1);
-                    }
-                    else {
-                        this.atualizar_fb_remocao(pai_sucessor, 1);
-                    }
-                }
-                
-
-                return remover;
-            }
-
             else {
-                No sucessor = remover.getFilhoDireito() != null ? remover.getFilhoDireito()
-                        : remover.getFilhoEsquerdo();
+                this.atualizar_fb_remocao(pai_sucessor, 1);
+            }
+        }
+    }
 
-                if (remover == this.raiz) {
-                    this.raiz = sucessor;
+    public No remover(No remover) {
+        boolean eh_filho_esquerdo = remover.éFilhoEsquerdo();
+        if (remover.éNoFolha()) {
+            No pai = remover.getPai();
+            if (pai == null) {
+                this.raiz = null;
+                return null;
+            }
+
+            this.removerFilho(pai, remover);
+            remover.setPai(null);
+
+            return remover;
+        }
+
+        else if (!remover.temDoisFilhos()){
+            No sucessor = remover.getFilhoDireito() != null ? remover.getFilhoDireito()
+                    : remover.getFilhoEsquerdo();
+
+            if (remover == this.raiz) {
+                this.raiz = sucessor;
+            }                
+            No pai_remover = remover.getPai();     
+
+            if(pai_remover != null){
+                if (remover.éFilhoEsquerdo()) {
+                    pai_remover.setFilhoEsquerdo(sucessor);
+                } else if (remover.éFilhoDireito()) {
+                    pai_remover.setFilhoDireito(sucessor);
                 }
-                this.removerFilho(remover, sucessor);
-                
-                No pai_remover = remover.getPai();
-                sucessor.setPai(pai_remover);
+            }
+            sucessor.setPai(pai_remover);
+            remover.setPai(null);
 
-                if(pai_remover != null){
-                    if (remover.éFilhoEsquerdo()) {
-                        pai_remover.setFilhoEsquerdo(sucessor);
-                    } else if (remover.éFilhoDireito()) {
-                        pai_remover.setFilhoDireito(sucessor);
-                    }
-                }
-                remover.setPai(null);
+            if (eh_filho_esquerdo) {
+                this.atualizar_fb_remocao(pai_remover, -1);
+            }
+            else {
+                this.atualizar_fb_remocao(pai_remover, 1);
+            }
 
-                if (eh_filho_esquerdo) {
-                    this.atualizar_fb_remocao(pai_remover, -1);
+            return pai_remover;
+        }
+        else {
+            No sucessor = this.inOrder(remover.getFilhoDireito());
+            No pai_sucessor = sucessor.getPai();
+            boolean sucessor_filho_esquerdo = sucessor.éFilhoEsquerdo();
+            int chave_sucessor = sucessor.getChave();
+            System.out.println(chave_sucessor);
+
+            remover(sucessor);
+            remover.setChave(chave_sucessor);
+            
+            
+            if(pai_sucessor != null){
+                if (sucessor_filho_esquerdo) {
+                    this.atualizar_fb_remocao(pai_sucessor, -1);
                 }
                 else {
-                    this.atualizar_fb_remocao(pai_remover, 1);
+                    this.atualizar_fb_remocao(pai_sucessor, 1);
                 }
-
-                return remover;
             }
-        } else {
-            return null;
+            
+            return pai_sucessor;
         }
+            
+        
     }
 
     public No inOrder(No v) {
