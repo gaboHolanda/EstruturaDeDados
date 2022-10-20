@@ -55,6 +55,11 @@ public class No {
         this.fatorBalanceamento = valor;
     }
 
+    public void setChave(int valor)
+    {
+        this.chave = valor;
+    }
+
     public boolean éFilhoEsquerdo()
     {
         if (this.getPai() == null){
