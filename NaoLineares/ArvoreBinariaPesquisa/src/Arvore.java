@@ -42,18 +42,35 @@ public class Arvore {
             return pai;
         } else if (pai.getChave() > k) {
             pai.setFilhoEsquerdo(novo);
+            novo.setPai(pai);
             atualizar_fb_insercao(pai, 1);
         } else if (pai.getChave() < k) {
             pai.setFilhoDireito(novo);
+            novo.setPai(pai);
             atualizar_fb_insercao(pai, -1);
         }
-
-        novo.setPai(pai);
+        
         return novo;
+    }
+
+    public int get_pai(int k)
+    {
+        No no = pesquisar(this.raiz, k);
+
+        if (no != null && no.getPai() != null){
+            return no.getPai().getChave();
+        }
+
+        return 0;
     }
 
     public void atualizar_fb_insercao(No no, int lado)
     {
+        System.out.println("Atualizar fator de balanceamento: " + no.getChave());
+        if(no.getPai() != null){
+            System.out.println("Pai: " + no.getPai().getChave());
+        }
+        
         if (no != null) {
             no.atualizarFator(lado);
             if (no.getFatorBalanceamento() > 1 || no.getFatorBalanceamento() < -1)
@@ -76,17 +93,18 @@ public class Arvore {
     {
         if (no != null) {
             no.atualizarFator(lado);
+            No pai = no.getPai();
 
             if (no.getFatorBalanceamento() > 1 || no.getFatorBalanceamento() < -1)
             {
                 rebalancearArvore(no);
             }
-            else if (no.getFatorBalanceamento() == 0 && no.getPai() != null) {
+            if (no.getFatorBalanceamento() == 0 && pai != null) {
                 if(no.éFilhoEsquerdo()){
-                    atualizar_fb_remocao(no.getPai(), -1);
+                    atualizar_fb_remocao(pai, -1);
                 }
                 else{
-                    atualizar_fb_remocao(no.getPai(), 1);
+                    atualizar_fb_remocao(pai, 1);
                 }  
             }
         }  
@@ -194,37 +212,41 @@ public class Arvore {
         this.rotacaoDireitaSimples(no);
     }
     
-    public No remover_avl(int k)
+    public void remover_avl(int k)
     {
         No remover = pesquisar(this.raiz, k);
-        remover(remover);
+        No removido = remover(remover);
 
-        if(pai_sucessor != null){
-            if (sucessor_filho_esquerdo) {
-                this.atualizar_fb_remocao(pai_sucessor, -1);
+        if(removido.getPai() != null){
+            if (removido.getPai().getChave() > removido.getChave()) {
+                this.atualizar_fb_remocao(removido.getPai(), -1);
             }
             else {
-                this.atualizar_fb_remocao(pai_sucessor, 1);
+                this.atualizar_fb_remocao(removido.getPai(), 1);
             }
         }
     }
 
     public No remover(No remover) {
-        boolean eh_filho_esquerdo = remover.éFilhoEsquerdo();
         if (remover.éNoFolha()) {
+            System.out.println("folha");
             No pai = remover.getPai();
             if (pai == null) {
                 this.raiz = null;
                 return null;
             }
 
-            this.removerFilho(pai, remover);
-            remover.setPai(null);
+            if (remover.éFilhoEsquerdo()) {
+                pai.setFilhoEsquerdo(null);
+            } else if (remover.éFilhoDireito()) {
+                pai.setFilhoDireito(null);
+            }
 
             return remover;
         }
 
         else if (!remover.temDoisFilhos()){
+            System.out.println("um filho");
             No sucessor = remover.getFilhoDireito() != null ? remover.getFilhoDireito()
                     : remover.getFilhoEsquerdo();
 
@@ -241,40 +263,21 @@ public class Arvore {
                 }
             }
             sucessor.setPai(pai_remover);
-            remover.setPai(null);
 
-            if (eh_filho_esquerdo) {
-                this.atualizar_fb_remocao(pai_remover, -1);
-            }
-            else {
-                this.atualizar_fb_remocao(pai_remover, 1);
-            }
-
-            return pai_remover;
+            return remover;
         }
+
         else {
+            System.out.println("dois filhos");
             No sucessor = this.inOrder(remover.getFilhoDireito());
-            No pai_sucessor = sucessor.getPai();
-            boolean sucessor_filho_esquerdo = sucessor.éFilhoEsquerdo();
             int chave_sucessor = sucessor.getChave();
             System.out.println(chave_sucessor);
 
-            remover(sucessor);
-            remover.setChave(chave_sucessor);
+            No retorno = remover(sucessor);
+            remover.setChave(chave_sucessor);          
             
-            
-            if(pai_sucessor != null){
-                if (sucessor_filho_esquerdo) {
-                    this.atualizar_fb_remocao(pai_sucessor, -1);
-                }
-                else {
-                    this.atualizar_fb_remocao(pai_sucessor, 1);
-                }
-            }
-            
-            return pai_sucessor;
-        }
-            
+            return retorno;
+        }   
         
     }
 
@@ -294,14 +297,6 @@ public class Arvore {
 
     public No getRaiz(){
         return this.raiz;
-    }
-
-    private void removerFilho(No pai, No filho) {
-        if (filho.éFilhoEsquerdo()) {
-            pai.setFilhoEsquerdo(null);
-        } else if (filho.éFilhoDireito()) {
-            pai.setFilhoDireito(null);
-        }
     }
 
     public void mostrarArvore() {
