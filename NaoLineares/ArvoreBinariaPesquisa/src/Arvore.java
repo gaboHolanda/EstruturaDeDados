@@ -207,7 +207,7 @@ public class Arvore {
         No remover = pesquisar(this.raiz, k);
         No removido = remover(remover);
 
-        if(removido.getPai() != null){
+        if(removido != null && removido.getPai() != null){
             if (removido.getPai().getChave() > removido.getChave()) {
                 this.atualizar_fb_remocao(removido.getPai(), -1);
             }
