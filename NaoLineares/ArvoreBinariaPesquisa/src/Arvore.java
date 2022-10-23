@@ -53,17 +53,6 @@ public class Arvore {
         return novo;
     }
 
-    public int get_pai(int k)
-    {
-        No no = pesquisar(this.raiz, k);
-
-        if (no != null && no.getPai() != null){
-            return no.getPai().getChave();
-        }
-
-        return 0;
-    }
-
     public void atualizar_fb_insercao(No no, int lado)
     {
         System.out.println("Atualizar fator de balanceamento: " + no.getChave());
@@ -73,17 +62,18 @@ public class Arvore {
         
         if (no != null) {
             no.atualizarFator(lado);
+            No pai = no.getPai();
             if (no.getFatorBalanceamento() > 1 || no.getFatorBalanceamento() < -1)
             {
                 rebalancearArvore(no);
             }
 
             if (no.getFatorBalanceamento() != 0 && no.getPai() != null) {
-                if(no.éFilhoEsquerdo()){
-                    atualizar_fb_insercao(no.getPai(), 1);
+                if(pai.getChave() > no.getChave()){
+                    atualizar_fb_insercao(pai, 1);
                 }
                 else{
-                    atualizar_fb_insercao(no.getPai(), -1);
+                    atualizar_fb_insercao(pai, -1);
                 }  
             }
         }
@@ -100,7 +90,7 @@ public class Arvore {
                 rebalancearArvore(no);
             }
             if (no.getFatorBalanceamento() == 0 && pai != null) {
-                if(no.éFilhoEsquerdo()){
+                if(pai.getChave() > no.getChave()){
                     atualizar_fb_remocao(pai, -1);
                 }
                 else{
