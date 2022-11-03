@@ -336,7 +336,7 @@ public class Arvore {
         if (x == null) {
             System.out.print(" ");
         } else {
-            System.out.print(x.getChave() + " " + x.getFatorBalanceamento());
+            System.out.print(x.getChave() + " [" + x.getFatorBalanceamento() + "]");
         }
     }
 
