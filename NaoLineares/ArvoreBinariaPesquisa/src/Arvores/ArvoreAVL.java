@@ -1,9 +1,12 @@
+package Arvores;
 import java.util.LinkedList;
 
-public class Arvore {
-    No raiz;
+import Nos.NoAVL;
 
-    public No pesquisar(No v, int k) {
+public class ArvoreAVL {
+    NoAVL raiz;
+
+    public NoAVL pesquisar(NoAVL v, int k) {
         if (v.éNoFolha()) {
             return v;
         }
@@ -28,15 +31,15 @@ public class Arvore {
         return null;
     }
 
-    public No inserir(int k) {
-        No novo = new No(null, k);
+    public NoAVL inserir(int k) {
+        NoAVL novo = new NoAVL(null, k);
 
         if (this.raiz == null) {
             this.raiz = novo;
             return novo;
         }
 
-        No pai = pesquisar(this.raiz, k);
+        NoAVL pai = pesquisar(this.raiz, k);
 
         if (pai.getChave() == k) {
             return pai;
@@ -53,7 +56,7 @@ public class Arvore {
         return novo;
     }
 
-    public void atualizar_fb_insercao(No no, int lado)
+    public void atualizar_fb_insercao(NoAVL no, int lado)
     {
         System.out.println("Atualizar fator de balanceamento: " + no.getChave());
         if(no.getPai() != null){
@@ -62,7 +65,7 @@ public class Arvore {
         
         if (no != null) {
             no.atualizarFator(lado);
-            No pai = no.getPai();
+            NoAVL pai = no.getPai();
             if (no.getFatorBalanceamento() > 1 || no.getFatorBalanceamento() < -1)
             {
                 rebalancearArvore(no);
@@ -79,11 +82,11 @@ public class Arvore {
         }
     }
 
-    public void atualizar_fb_remocao(No no, int lado)
+    public void atualizar_fb_remocao(NoAVL no, int lado)
     {
         if (no != null) {
             no.atualizarFator(lado);
-            No pai = no.getPai();
+            NoAVL pai = no.getPai();
 
             if (no.getFatorBalanceamento() > 1 || no.getFatorBalanceamento() < -1)
             {
@@ -100,7 +103,7 @@ public class Arvore {
         }  
     }
 
-    public void rebalancearArvore(No no)
+    public void rebalancearArvore(NoAVL no)
     {
         int FB = no.getFatorBalanceamento();
         if (FB < 0){
@@ -119,10 +122,10 @@ public class Arvore {
         }
     }
 
-    public void rotacaoEsquerdaSimples(No no)
+    public void rotacaoEsquerdaSimples(NoAVL no)
     {
-        No pai_desbalanceado = no.getPai();
-        No sucessor = no.getFilhoDireito();
+        NoAVL pai_desbalanceado = no.getPai();
+        NoAVL sucessor = no.getFilhoDireito();
         
         if (pai_desbalanceado != null){
             if (no.éFilhoDireito()){
@@ -154,17 +157,17 @@ public class Arvore {
         
     }
 
-    public void rotacaoEsquerdaDupla(No no)
+    public void rotacaoEsquerdaDupla(NoAVL no)
     {
         this.rotacaoDireitaSimples(no.getFilhoDireito());
         
         this.rotacaoEsquerdaSimples(no);
     }
 
-    public void rotacaoDireitaSimples(No no)
+    public void rotacaoDireitaSimples(NoAVL no)
     {
-        No pai_desbalanceado = no.getPai();
-        No sucessor = no.getFilhoEsquerdo();
+        NoAVL pai_desbalanceado = no.getPai();
+        NoAVL sucessor = no.getFilhoEsquerdo();
         
         if (pai_desbalanceado != null){
             if (no.éFilhoDireito()){
@@ -196,7 +199,7 @@ public class Arvore {
         
     }
 
-    public void rotacaoDireitaDupla(No no)
+    public void rotacaoDireitaDupla(NoAVL no)
     {
         this.rotacaoEsquerdaSimples(no.getFilhoEsquerdo());
         this.rotacaoDireitaSimples(no);
@@ -204,8 +207,8 @@ public class Arvore {
     
     public void remover_avl(int k)
     {
-        No remover = pesquisar(this.raiz, k);
-        No removido = remover(remover);
+        NoAVL remover = pesquisar(this.raiz, k);
+        NoAVL removido = remover(remover);
 
         if(removido != null && removido.getPai() != null){
             if (removido.getPai().getChave() > removido.getChave()) {
@@ -217,10 +220,10 @@ public class Arvore {
         }
     }
 
-    public No remover(No remover) {
+    public NoAVL remover(NoAVL remover) {
         if (remover.éNoFolha()) {
             System.out.println("folha");
-            No pai = remover.getPai();
+            NoAVL pai = remover.getPai();
             if (pai == null) {
                 this.raiz = null;
                 return null;
@@ -237,13 +240,13 @@ public class Arvore {
 
         else if (!remover.temDoisFilhos()){
             System.out.println("um filho");
-            No sucessor = remover.getFilhoDireito() != null ? remover.getFilhoDireito()
+            NoAVL sucessor = remover.getFilhoDireito() != null ? remover.getFilhoDireito()
                     : remover.getFilhoEsquerdo();
 
             if (remover == this.raiz) {
                 this.raiz = sucessor;
             }                
-            No pai_remover = remover.getPai();     
+            NoAVL pai_remover = remover.getPai();     
 
             if(pai_remover != null){
                 if (remover.éFilhoEsquerdo()) {
@@ -259,11 +262,11 @@ public class Arvore {
 
         else {
             System.out.println("dois filhos");
-            No sucessor = this.inOrder(remover.getFilhoDireito());
+            NoAVL sucessor = this.inOrder(remover.getFilhoDireito());
             int chave_sucessor = sucessor.getChave();
             System.out.println(chave_sucessor);
 
-            No retorno = remover(sucessor);
+            NoAVL retorno = remover(sucessor);
             remover.setChave(chave_sucessor);          
             
             return retorno;
@@ -271,7 +274,7 @@ public class Arvore {
         
     }
 
-    public No inOrder(No v) {
+    public NoAVL inOrder(NoAVL v) {
         if (v.getFilhoEsquerdo() != null) {
             return inOrder(v.getFilhoEsquerdo());
         }
@@ -281,27 +284,27 @@ public class Arvore {
         // }
     }
 
-    public void setRaiz(No raiz) {
+    public void setRaiz(NoAVL raiz) {
         this.raiz = raiz;
     }
 
-    public No getRaiz(){
+    public NoAVL getRaiz(){
         return this.raiz;
     }
 
     public void mostrarArvore() {
-        No raiz = this.raiz;
+        NoAVL raiz = this.raiz;
 
-        LinkedList<No> nivelArvore = new LinkedList<No>();
+        LinkedList<NoAVL> nivelArvore = new LinkedList<NoAVL>();
         nivelArvore.add(raiz);
-        LinkedList<No> temp = new LinkedList<No>();
+        LinkedList<NoAVL> temp = new LinkedList<NoAVL>();
 
         int contador = 0;
         int altura = altura(this.raiz);
         double numberOfElements = (Math.pow(2, (altura)) - 1);
 
         while (contador <= (altura+1)) {
-            No removido = nivelArvore.removeFirst();
+            NoAVL removido = nivelArvore.removeFirst();
             if (temp.isEmpty()) {
                 imprimirEspaco(numberOfElements
                         / Math.pow(2, contador + 1),
@@ -329,7 +332,7 @@ public class Arvore {
         }
     }
 
-    public static void imprimirEspaco(double n, No x) {
+    public static void imprimirEspaco(double n, NoAVL x) {
         for (; n > 0; n--) {
             System.out.print("\t");
         }
@@ -340,7 +343,7 @@ public class Arvore {
         }
     }
 
-    public static int altura(No raiz) {
+    public static int altura(NoAVL raiz) {
         if (raiz == null || raiz.éNoFolha()) {
             return 0;
         }
@@ -348,7 +351,7 @@ public class Arvore {
         return 1 + Math.max(altura(raiz.getFilhoEsquerdo()), altura(raiz.getFilhoDireito()));
     }
 
-    public static int profundidade(No raiz) {
+    public static int profundidade(NoAVL raiz) {
         if (raiz == null || raiz.getPai() == null) {
             return 0;
         }

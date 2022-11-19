@@ -1,9 +1,11 @@
 import java.util.Scanner;
 
+import Arvores.ArvoreRubroNegra;
+
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        Arvore arvore = new Arvore();
+        ArvoreRubroNegra arvore = new ArvoreRubroNegra();
         int choice = 0;
         
         Scanner sc = new Scanner(System.in);
@@ -23,7 +25,7 @@ public class Main {
             if(choice == 2){
                 System.out.print("Remover:");  
                 int numero = sc.nextInt();
-                arvore.remover_avl(numero);
+                // arvore.remover_avl(numero);
                 arvore.mostrarArvore();
             }
             if(choice == 3){

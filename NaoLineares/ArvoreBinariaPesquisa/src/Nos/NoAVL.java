@@ -1,25 +1,26 @@
-public class No {
-    No pai;
-    No filhoEsquerdo;
-    No filhoDireito;
+package Nos;
+public class NoAVL {
+    NoAVL pai;
+    NoAVL filhoEsquerdo;
+    NoAVL filhoDireito;
     int fatorBalanceamento = 0;
     int chave;
 
-    No(No pai, int chave)
+    NoAVL(NoAVL pai, int chave)
     {
         this.pai = pai;
         this.chave = chave;
     }
 
-    public No getFilhoEsquerdo()
+    public NoAVL getFilhoEsquerdo()
     {
         return this.filhoEsquerdo;
     }
-    public No getFilhoDireito()
+    public NoAVL getFilhoDireito()
     {
         return this.filhoDireito;
     }
-    public No getPai()
+    public NoAVL getPai()
     {
         return this.pai;
     }
@@ -38,15 +39,15 @@ public class No {
         this.fatorBalanceamento += (1 * valor);
     }
 
-    public void setFilhoEsquerdo(No no)
+    public void setFilhoEsquerdo(NoAVL no)
     {
         this.filhoEsquerdo = no;
     }
-    public void setFilhoDireito(No no)
+    public void setFilhoDireito(NoAVL no)
     {
         this.filhoDireito = no;
     }
-    public void setPai(No no)
+    public void setPai(NoAVL no)
     {
         this.pai = no;
     }
