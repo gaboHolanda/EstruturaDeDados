@@ -106,7 +106,7 @@ public class No {
     }
     public boolean éNoFolha()
     {
-        return (this.getFilhoDireito() == null && this.getFilhoEsquerdo() == null && this.chave == null);
+        return (this.getFilhoDireito() == null && this.getFilhoEsquerdo() == null);
     }
 
     public boolean temDoisFilhos()

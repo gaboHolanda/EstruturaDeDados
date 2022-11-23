@@ -75,7 +75,7 @@ public class ArvoreRubroNegra {
 
     private String getCorNo(No no)
     {
-        if(no == null){
+        if(no == null || no.chave == null){
             return No.NEGRO;
         }
         return no.cor;
@@ -107,19 +107,20 @@ public class ArvoreRubroNegra {
         return novo;
     }
 
-    public void Situacao3_remover(No removido, No sucessor)
+    public void Situacao3_remover(No sucessor)
     {
         if(getCorNo(sucessor.getIrmao()) == No.RUBRO && getCorNo(sucessor.getPai()) == No.NEGRO){
             sucessor.setDuploNegro(true);
+            sucessor.getIrmao().setCor(No.NEGRO);
+            sucessor.getPai().setCor(No.RUBRO);
             if(sucessor.éFilhoEsquerdo()){
                 arvore.rotacaoEsquerdaSimples(sucessor.getPai());
             }
             else{
                 arvore.rotacaoDireitaSimples(sucessor.getPai());
-            } 
+            }
+            Situacao3_remover(sucessor);
             
-            sucessor.getIrmao().setCor(No.NEGRO);
-            sucessor.getPai().setCor(No.RUBRO);
         }
         if(getCorNo(sucessor.getIrmao()) == No.NEGRO){
             if (getCorNo(sucessor.getIrmao().getFilhoDireito()) == No.NEGRO && getCorNo(sucessor.getIrmao().getFilhoEsquerdo()) == No.NEGRO){
@@ -127,6 +128,7 @@ public class ArvoreRubroNegra {
                     sucessor.getIrmao().setCor(No.RUBRO);
                     sucessor.setDuploNegro(false);
                     sucessor.getPai().setDuploNegro(true);
+                    Situacao3_remover(sucessor.getPai());
                 }
                 else{
                     sucessor.getIrmao().setCor(No.RUBRO);
@@ -138,15 +140,14 @@ public class ArvoreRubroNegra {
             if (getCorNo(sucessor.getIrmao().getFilhoDireito()) == No.NEGRO && getCorNo(sucessor.getIrmao().getFilhoEsquerdo()) == No.RUBRO){
                 sucessor.getIrmao().getFilhoEsquerdo().setCor(No.NEGRO);
                 sucessor.getIrmao().setCor(No.RUBRO);
-                arvore.rotacaoDireitaSimples(sucessor.getIrmao());    
+                arvore.rotacaoDireitaSimples(sucessor.getIrmao());   
+                Situacao3_remover(sucessor); 
             }
             if (getCorNo(sucessor.getIrmao().getFilhoDireito()) == No.RUBRO){
                 sucessor.getIrmao().setCor(getCorNo(sucessor.getPai()));
                 sucessor.getPai().setCor(No.NEGRO);
+                sucessor.getIrmao().getFilhoDireito().setCor(No.NEGRO);
 
-                if (sucessor.getIrmao().getFilhoDireito() != null){
-                    sucessor.getIrmao().getFilhoDireito().setCor(No.NEGRO);
-                }
                 arvore.rotacaoEsquerdaSimples(sucessor.getIrmao());
             }
             sucessor.setDuploNegro(false);
@@ -165,7 +166,7 @@ public class ArvoreRubroNegra {
         No sucessor = resultado.getSucessor();
 
         // SITUAÇÃO 1
-        if (getCorNo(removido) == No.RUBRO && getCorNo(sucessor) == No.RUBRO){
+        if (getCorNo(removido) == No.RUBRO && (getCorNo(sucessor) == No.RUBRO || sucessor == null)){
             return removido;
         }
 
@@ -177,14 +178,22 @@ public class ArvoreRubroNegra {
 
         // SITUAÇÃO 3
         if (getCorNo(removido) == No.NEGRO && getCorNo(sucessor) == No.NEGRO){
-            this.Situacao3_remover(removido, sucessor);
+            this.Situacao3_remover(sucessor);
             return removido;
         }
 
         // SITUAÇÃO 4
         if (getCorNo(removido) == No.RUBRO && getCorNo(sucessor) == No.NEGRO){
             sucessor.setCor(No.RUBRO);
-            this.Situacao3_remover(removido, sucessor);
+            No filho_direito = sucessor.getFilhoDireito();
+
+            if (filho_direito == null){
+                filho_direito = new No(sucessor, null);
+                sucessor.setFilhoDireito(filho_direito);
+            }
+            filho_direito.setDuploNegro(true);
+            
+            this.Situacao3_remover(filho_direito);
             return removido;
         }
 
