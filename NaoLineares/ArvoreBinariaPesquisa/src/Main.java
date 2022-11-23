@@ -24,7 +24,7 @@ public class Main {
             }
             if(choice == 2){
                 System.out.print("Remover:");  
-                int numero = sc.nextInt();
+                // int numero = sc.nextInt();
                 // arvore.remover_avl(numero);
                 arvore.mostrarArvore();
             }

@@ -1,6 +1,7 @@
 package Arvores;
 import java.util.LinkedList;
 import Nos.No;
+import Utils.Resultado;
 
 public class ArvoreBinariaPesquisa {
     public No raiz = null;
@@ -127,7 +128,7 @@ public class ArvoreBinariaPesquisa {
         this.rotacaoDireitaSimples(no);
     }
 
-    public No remover(No remover) {
+    public Resultado remover(No remover) {
         if (remover.éNoFolha()) {
             No pai = remover.getPai();
             if (pai == null) {
@@ -141,7 +142,7 @@ public class ArvoreBinariaPesquisa {
                 pai.setFilhoDireito(null);
             }
 
-            return remover;
+            return new Resultado(remover, null);
         }
 
         else if (!remover.temDoisFilhos()){
@@ -162,7 +163,7 @@ public class ArvoreBinariaPesquisa {
             }
             sucessor.setPai(pai_remover);
 
-            return remover;
+            return new Resultado(remover, sucessor);
         }
 
         else {
@@ -170,10 +171,11 @@ public class ArvoreBinariaPesquisa {
             int chave_sucessor = sucessor.getChave();
             System.out.println(chave_sucessor);
 
-            No retorno = remover(sucessor);
+            Resultado resultado = remover(sucessor);
+            No retorno = resultado.getRemovido();
             remover.setChave(chave_sucessor);          
             
-            return retorno;
+            return new Resultado(retorno, remover);
         }   
         
     }

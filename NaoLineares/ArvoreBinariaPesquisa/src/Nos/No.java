@@ -8,6 +8,7 @@ public class No {
     public static final String NEGRO = "NEGRO";
     public String cor = null;
     public Integer chave = null;
+    public boolean duplo_negro = false;
 
     public No(No pai, Integer chave)
     {
@@ -51,6 +52,14 @@ public class No {
     {
         return this.chave;
     }
+    public String getCor()
+    {
+        return this.cor;
+    }
+    public boolean getDuploNegro()
+    {
+        return this.duplo_negro;
+    }
 
     // SETTERS
     public void setFilhoEsquerdo(No no)
@@ -73,6 +82,10 @@ public class No {
     public void setCor(String valor)
     {
         this.cor = valor;
+    }
+    public void setDuploNegro(Boolean valor)
+    {
+        this.duplo_negro = valor;
     }
 
     // METHODS
