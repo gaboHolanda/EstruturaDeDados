@@ -167,14 +167,19 @@ public class ArvoreBinariaPesquisa {
         }
 
         else {
+            int chave_remover = remover.getChave();
             No sucessor = this.inOrder(remover.getFilhoDireito());
             int chave_sucessor = sucessor.getChave();
-            System.out.println(chave_sucessor);
 
             Resultado resultado = remover(sucessor);
-            No retorno = resultado.getRemovido();
-            remover.setChave(chave_sucessor);          
             
+            No retorno = resultado.getRemovido();
+            remover.setChave(chave_sucessor);
+            retorno.setChave(chave_remover);
+            
+            String cor_remover = remover.getCor();
+            remover.setCor(retorno.getCor());
+            retorno.setCor(cor_remover);
             return new Resultado(retorno, remover);
         }   
         

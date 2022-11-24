@@ -14,7 +14,12 @@ public class No {
     {
         this.pai = pai;
         this.chave = chave;
-        this.cor = RUBRO;
+        if (chave == null){
+            this.cor = NEGRO;
+        }
+        else{
+            this.cor = RUBRO;
+        }
     }
 
 
@@ -48,7 +53,7 @@ public class No {
     {
         return this.pai.getIrmao();
     }
-    public int getChave()
+    public Integer getChave()
     {
         return this.chave;
     }

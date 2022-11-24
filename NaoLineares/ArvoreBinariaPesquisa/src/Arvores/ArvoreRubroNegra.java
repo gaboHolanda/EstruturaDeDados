@@ -95,7 +95,7 @@ public class ArvoreRubroNegra {
                     if(getCorNo(novo.getTio()) == No.RUBRO){
                         InsercaoCaso2(novo);
                     }
-                    else{
+                    else if(getCorNo(novo.getTio()) == No.NEGRO){
                         InsercaoCaso3(novo);
                     }      
                 }
@@ -164,6 +164,8 @@ public class ArvoreRubroNegra {
         Resultado resultado = arvore.remover(no);
         No removido = resultado.getRemovido();
         No sucessor = resultado.getSucessor();
+        System.out.println(removido.chave);
+        System.out.println(getCorNo(removido));
 
         // SITUAÇÃO 1
         if (getCorNo(removido) == No.RUBRO && (getCorNo(sucessor) == No.RUBRO || sucessor == null)){
@@ -189,6 +191,7 @@ public class ArvoreRubroNegra {
 
             if (filho_direito == null){
                 filho_direito = new No(sucessor, null);
+                filho_direito.setCor(No.NEGRO);
                 sucessor.setFilhoDireito(filho_direito);
             }
             filho_direito.setDuploNegro(true);
